@@ -1,0 +1,40 @@
+name: Test
+# Need GitHub secret: DOCKER_HUB_USER, DOCKER_HUB_SECRETS, GHCR_TOKEN
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  Test:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v2.1.3
+        with:
+          go-version: 1.16
+        id: go
+      - name: TektonControllerTest
+        run: |
+          curl -L https://github.com/linuxsuren/http-downloader/releases/latest/download/hd-linux-amd64.tar.gz | tar xzv
+          mv hd /usr/local/bin
+
+          hd fetch
+          hd install ks
+          hd install helm
+
+          ks install k3d --with-ks=false --reinstall=true
+          # shoule remove this crd in the future
+          ks apply -f https://raw.githubusercontent.com/kubesphere/kubesphere/master/config/crds/tenant.kubesphere.io_workspacetemplates.yaml
+
+          helm repo add ks https://linuxsuren.github.io/ks-devops/
+          helm install ks-ctl ks/ks-devops -n kubesphere-devops-system \
+            --set serviceAccount.create=true \
+            --create-namespace \
+          	--set image.pullPolicy=Always \
+          	--set jenkins.ksAuth.enabled=true
+
+          go test ./...
