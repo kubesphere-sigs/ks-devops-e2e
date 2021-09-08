@@ -3,6 +3,7 @@ module github.com/kubesphere-sigs/ks-devops-e2e
 go 1.16
 
 require (
+	github.com/Pallinder/go-randomdata v1.2.0
 	github.com/linuxsuren/http-downloader v0.0.35
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.16.0
