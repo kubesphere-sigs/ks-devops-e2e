@@ -30,7 +30,7 @@ jobs:
           # shoule remove this crd in the future
           ks apply -f https://raw.githubusercontent.com/kubesphere/kubesphere/master/config/crds/tenant.kubesphere.io_workspacetemplates.yaml
 
-          helm repo add ks https://linuxsuren.github.io/ks-devops/
+          helm repo add ks https://kubesphere-sigs.github.io/ks-devops-helm-chart/
           helm install ks-ctl ks/ks-devops -n kubesphere-devops-system \
             --set serviceAccount.create=true \
             --create-namespace \
